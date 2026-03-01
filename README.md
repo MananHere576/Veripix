@@ -1,6 +1,23 @@
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Roboto&weight=900&size=30&duration=3000&pause=1000&color=0981F7&background=FFFFFF00&center=true&vCenter=true&width=1245&lines=Image+Forensics;Classification:+EfficientNet-B0+Model;Segmentation:+U-Net+Model)](https://git.io/typing-svg)
+
+
 # Veripix
 
 **Veripix** is a multi-stream deep learning system for image tampering detection and localization. It combines original image content, Error Level Analysis (ELA), and Noise Residual Maps to accurately classify and segment forged regions using CNN and U-Net-based models.
+
+## Interface
+![Main Interface](Images/P1.png)
+
+![Main Interface](Images/P2.png)
+
+![Main Interface](Images/P3.png)
+
+## Analysis
+![Main Interface](Images/A1.png)
+
+![Main Interface](Images/A2.png)
+
+![Main Interface](Images/A3.png)
 
 ---
 
