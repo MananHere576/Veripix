@@ -6,23 +6,26 @@ import axios from 'axios';
 function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [preview, setPreview] = useState(null); // for instant preview
+  const [preview, setPreview] = useState(null);
 
   const handleUpload = async (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
     setLoading(true);
-    setPreview(URL.createObjectURL(selectedFile)); // show instantly
+    setPreview(URL.createObjectURL(selectedFile));
 
     const formData = new FormData();
     formData.append('file', selectedFile);
 
     try {
-      const response = await axios.post('https://veripix.onrender.com/analyze/', formData);
+      const response = await axios.post(
+        'https://veripix.onrender.com/analyze/',
+        formData
+      );
       setResult(response.data);
     } catch (err) {
-      alert("System Offline: Ensure Python Backend is running on Port 8000");
+      alert("System Offline: Backend not reachable.");
     } finally {
       setLoading(false);
     }
@@ -38,7 +41,7 @@ function App() {
             <ShieldCheck className="w-10 h-10 text-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
             <div>
               <h1 className="text-2xl font-black uppercase italic tracking-tighter">
-                VeriPix <span className="text-cyan-500 text-3xl"></span>
+                VeriPix
               </h1>
               <p className="text-[9px] font-mono text-slate-500 uppercase tracking-[0.2em]">
                 Forensic Authentication Suite
@@ -60,10 +63,10 @@ function App() {
           </div>
         ) : (
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="space-y-8">
 
-            {/* LEFT SECTION */}
-            <div className="lg:col-span-8 space-y-6">
+            {/* SIDE BY SIDE IMAGE SECTION */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
               {/* ORIGINAL IMAGE */}
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-2xl">
@@ -76,7 +79,7 @@ function App() {
                     (result.filename &&
                       `https://veripix.onrender.com/files/${encodeURIComponent(result.filename)}`)
                   }
-                  className="w-full rounded-xl border border-emerald-500/20"
+                  className="w-full h-[400px] object-contain rounded-xl border border-emerald-500/20 bg-black"
                   alt="Original"
                 />
               </div>
@@ -88,107 +91,99 @@ function App() {
                 </p>
                 <img
                   src={`https://veripix.onrender.com/files/${result.heatmap_filename}`}
-                  className="w-full rounded-xl border border-orange-500/20"
+                  className="w-full h-[400px] object-contain rounded-xl border border-orange-500/20 bg-black"
                   alt="Analysis"
                 />
               </div>
 
-              {/* CHART + HARDWARE */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </div>
 
-                {/* PROBABILITY CHART */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-                  <p className="text-[10px] font-bold text-cyan-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                    <Cpu size={14} /> Probability Distribution (%)
-                  </p>
+            {/* METADATA + STATS SECTION */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                  <div className="h-40 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={result.metadata.stats} margin={{ left: -30 }}>
-                        <XAxis dataKey="name" fontSize={9} tick={{ fill: '#475569' }} axisLine={false} tickLine={false} />
-                        <YAxis domain={[0, 100]} fontSize={9} tick={{ fill: '#475569' }} axisLine={false} tickLine={false} />
-                        <Tooltip formatter={(val) => `${val}%`} contentStyle={{ backgroundColor: '#0f172a', border: 'none', fontSize: '10px' }} />
-                        <Bar dataKey="val" radius={[4, 4, 0, 0]}>
-                          {result.metadata.stats.map((e, i) => (
-                            <Cell key={i} fill={e.val > 70 ? '#f97316' : '#06b6d4'} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+              {/* PROBABILITY CHART */}
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <p className="text-[10px] font-bold text-cyan-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                  <Cpu size={14} /> Probability Distribution (%)
+                </p>
+                <div className="h-40 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={result.metadata.stats}>
+                      <XAxis dataKey="name" fontSize={9} tick={{ fill: '#475569' }} />
+                      <YAxis domain={[0, 100]} fontSize={9} tick={{ fill: '#475569' }} />
+                      <Tooltip formatter={(val) => `${val}%`} />
+                      <Bar dataKey="val">
+                        {result.metadata.stats.map((e, i) => (
+                          <Cell key={i} fill={e.val > 70 ? '#f97316' : '#06b6d4'} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
+              </div>
 
-                {/* HARDWARE PROFILE */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                    <Camera size={14} /> Hardware Profile
-                  </p>
-                  <div className="space-y-4 text-[11px] font-mono">
-                    <div className="flex justify-between border-b border-slate-800/50 pb-2">
-                      <span className="text-slate-500">MAKE</span>
-                      <span className="text-slate-200">{result.metadata.make}</span>
-                    </div>
-                    <div className="flex justify-between border-b border-slate-800/50 pb-2">
-                      <span className="text-slate-500">MODEL</span>
-                      <span className="text-slate-200">{result.metadata.model}</span>
-                    </div>
-                    <div className="flex justify-between border-b border-slate-800/50 pb-2">
-                      <span className="text-slate-500">SIZE</span>
-                      <span className="text-cyan-400">{result.metadata.file_size}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">SOFTWARE</span>
-                      <span className="text-slate-200 truncate ml-4">{result.metadata.software}</span>
-                    </div>
+              {/* HARDWARE PROFILE */}
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                  <Camera size={14} /> Hardware Profile
+                </p>
+                <div className="space-y-3 text-xs font-mono">
+                  <div className="flex justify-between">
+                    <span>MAKE</span>
+                    <span>{result.metadata.make}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>MODEL</span>
+                    <span>{result.metadata.model}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>SIZE</span>
+                    <span>{result.metadata.file_size}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>SOFTWARE</span>
+                    <span>{result.metadata.software}</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* RIGHT PANEL */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl sticky top-8">
-
-                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-800 pb-4 mb-6 flex items-center gap-2">
-                  <Fingerprint size={16} className="text-cyan-400" /> Forensic Timeline
-                </h3>
-
-                <div className="space-y-4">
-
-                  <div className="bg-slate-950 p-4 rounded-xl border-l-2 border-slate-700">
-                    <p className="text-[9px] text-slate-500 uppercase font-black mb-1">Acquisition Date</p>
-                    <p className="text-xs font-mono text-slate-300">{result.metadata.creation_date}</p>
+              {/* FORENSIC TIMELINE */}
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                  <Fingerprint size={14} /> Forensic Timeline
+                </p>
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <p className="text-slate-500">Acquisition Date</p>
+                    <p>{result.metadata.creation_date}</p>
                   </div>
-
-                  <div className={`p-4 rounded-xl border-l-2 ${result.metadata.tamper_date !== "None Detected" ? 'bg-orange-500/10 border-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.1)]' : 'bg-slate-950 border-emerald-500/30'}`}>
-                    <p className="text-[9px] text-orange-500 uppercase font-black mb-1 flex items-center gap-1">
-                      <Clock size={10} /> Suspected Tamper Date
-                    </p>
-                    <p className={`text-xs font-mono ${result.metadata.tamper_date !== "None Detected" ? 'text-orange-200' : 'text-emerald-400'}`}>
-                      {result.metadata.tamper_date}
-                    </p>
+                  <div>
+                    <p className="text-slate-500">Tamper Date</p>
+                    <p>{result.metadata.tamper_date}</p>
                   </div>
-
-                  <div className={`p-4 rounded-xl border-l-2 ${result.metadata.is_suspicious ? 'bg-red-500/10 border-red-500' : 'bg-emerald-500/10 border-emerald-500'}`}>
-                    <p className="text-[9px] uppercase font-black mb-1 text-slate-500">Final Verdict</p>
-                    <p className={`text-xs font-bold ${result.metadata.is_suspicious ? 'text-red-400' : 'text-emerald-400'}`}>
+                  <div>
+                    <p className="text-slate-500">Verdict</p>
+                    <p className={result.metadata.is_suspicious ? "text-red-400" : "text-emerald-400"}>
                       {result.metadata.is_suspicious ? 'FORGERY DETECTED' : 'AUTHENTIC ORIGINAL'}
                     </p>
                   </div>
                 </div>
-
-                <button
-                  onClick={() => {
-                    setResult(null);
-                    setPreview(null);
-                  }}
-                  className="w-full mt-8 flex items-center justify-center gap-2 bg-slate-800 hover:bg-cyan-600 p-4 rounded-xl transition-all font-black text-[10px] uppercase tracking-[0.2em] group"
-                >
-                  <RefreshCcw size={14} className="group-hover:rotate-180 transition-all duration-500" />
-                  Reset Scan
-                </button>
-
               </div>
+
+            </div>
+
+            {/* RESET BUTTON */}
+            <div className="text-center">
+              <button
+                onClick={() => {
+                  setResult(null);
+                  setPreview(null);
+                }}
+                className="mt-6 px-6 py-3 bg-slate-800 hover:bg-cyan-600 rounded-xl font-bold uppercase tracking-widest transition-all"
+              >
+                <RefreshCcw size={16} className="inline mr-2" />
+                Reset Scan
+              </button>
             </div>
 
           </div>
