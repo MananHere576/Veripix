@@ -73,8 +73,8 @@ function App() {
                 <img
                   src={
                     preview ||
-                    (result.original_filename &&
-                      `https://veripix.onrender.com/files/${encodeURIComponent(result.original_filename)}`)
+                    (result.filename &&
+                      `https://veripix.onrender.com/files/${encodeURIComponent(result.filename)}`)
                   }
                   className="w-full rounded-xl border border-emerald-500/20"
                   alt="Original"
