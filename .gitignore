@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Dataset
+datasets/
+
+# Upload temp folder
+temp_uploads/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
