@@ -19,7 +19,7 @@ function App() {
     formData.append('file', selectedFile);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/analyze/', formData);
+      const response = await axios.post('https://veripix.onrender.com/analyze/', formData);
       setResult(response.data);
     } catch (err) {
       alert("System Offline: Ensure Python Backend is running on Port 8000");
