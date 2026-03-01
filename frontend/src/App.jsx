@@ -74,7 +74,7 @@ function App() {
                   src={
                     preview ||
                     (result.original_filename &&
-                      `http://127.0.0.1:8000/files/${encodeURIComponent(result.original_filename)}`)
+                      `https://veripix.onrender.com/files/${encodeURIComponent(result.original_filename)}`)
                   }
                   className="w-full rounded-xl border border-emerald-500/20"
                   alt="Original"
@@ -87,7 +87,7 @@ function App() {
                   <Activity size={14} /> Neural Forgery Map
                 </p>
                 <img
-                  src={`http://127.0.0.1:8000/files/${result.heatmap_filename}`}
+                  src={`https://veripix.onrender.com/files/${result.heatmap_filename}`}
                   className="w-full rounded-xl border border-orange-500/20"
                   alt="Analysis"
                 />
