@@ -63,7 +63,7 @@ const LandingPage = () => {
             <Cpu className="text-orange-400 mb-6" size={28} />
             <h3 className="text-xl font-bold mb-3">AI Analysis</h3>
             <p className="text-slate-400 text-sm">
-              U-Net architecture with EfficientNet-B0 backbone scans for forgery signatures.
+              ResNet + CNN + Vision Transformer backbone scans for forgery signatures.
             </p>
           </div>
 
@@ -95,8 +95,8 @@ const LandingPage = () => {
               <ul className="text-slate-400 text-sm space-y-2">
                 <li>• PyTorch</li>
                 <li>• Segmentation Models PyTorch (SMP)</li>
-                <li>• U-Net Architecture</li>
-                <li>• EfficientNet-B0 Backbone</li>
+                <li>• ResNet Architecture</li>
+                <li>• CNN + Vision Transformer Backbone</li>
                 <li>• Torchvision (ImageNet Normalization)</li>
               </ul>
             </div>
